@@ -3,22 +3,23 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jessevdk/go-flags"
-	"github.com/kelseyhightower/envconfig"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/jessevdk/go-flags"
+	"github.com/kelseyhightower/envconfig"
 )
 
-type Options struct {
+type options struct {
 	Port int    `short:"p" long:"port" description:"Port to listen on" default:"9999"`
 	File string `short:"c" long:"config" description:"Configfile to load" default:".proxypass.json"`
 	Bind string `short:"b" long:"bind" description:"Ip address to bind too" default:"127.0.0.1"`
 }
 
-type Response map[string]interface{}
+type response map[string]interface{}
 
-func (r Response) String() (s string) {
+func (r response) String() (s string) {
 	b, err := json.MarshalIndent(r, "", "  ")
 	if err != nil {
 		s = ""
@@ -29,7 +30,7 @@ func (r Response) String() (s string) {
 }
 
 func main() {
-	opts := Options{}
+	opts := options{}
 	err := envconfig.Process("htecho", &opts)
 	if err != nil {
 		log.Fatalf("Error parsing ENV vars %s", err)
@@ -45,7 +46,7 @@ func main() {
 
 	hf := func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, Response{
+		fmt.Fprint(w, response{
 			"headers":     r.Header,
 			"method":      r.Method,
 			"host":        r.Host,
@@ -60,5 +61,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
