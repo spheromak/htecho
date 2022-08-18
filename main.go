@@ -52,6 +52,7 @@ func main() {
 			"host":        r.Host,
 			"proto":       r.Proto,
 			"request_uri": r.RequestURI,
+			"remote_addr": r.RemoteAddr,
 		})
 	}
 
